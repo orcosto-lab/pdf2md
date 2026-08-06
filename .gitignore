@@ -1,0 +1,18 @@
+# Entorno virtual
+.venv/
+
+# Artefactos de compilación PyInstaller
+Trabajo/build/
+Trabajo/dist/
+Trabajo/__pycache__/
+*.pyc
+
+# Artefactos de diagnóstico / pruebas puntuales (no forman parte de la app)
+Trabajo/_diagnostico.md
+Trabajo/_diagnostico_images/
+
+# PDFs de prueba y salidas generadas (contenido de terceros, no se publican)
+Datos/
+
+# Entregable: se publica como asset de Release, no en el repo (supera límites de Git)
+Final/
