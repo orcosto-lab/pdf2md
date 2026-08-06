@@ -1,54 +1,72 @@
-# PDF a Markdown (PDF2MD)
+**[Leer en español](README.es.md)**
 
-Aplicación de escritorio para Windows que convierte documentos PDF (manuales
-técnicos, artículos, etc.) a Markdown, con extracción opcional de imágenes.
-Pensada para generar contenido en Markdown listo para usar como contexto en
-conversaciones con LLMs.
+[![Download latest release](https://img.shields.io/github/v/release/orcosto-lab/pdf2md?label=Download%20latest%20release)](https://github.com/orcosto-lab/pdf2md/releases/latest)
 
-## Características
+# PDF to Markdown (PDF2MD)
 
-- Interfaz gráfica sencilla (customtkinter): seleccionar PDF y guardar.
-- Dos modos de exportación:
-  - **Texto MD+Imágenes**: convierte el texto y extrae las imágenes del PDF a
-    una carpeta junto al `.md`, con enlaces relativos.
-  - **Texto MD**: solo texto, sin imágenes.
-- Conversión página a página: si una página falla, se anota el error en el
-  resultado y continúa con el resto del documento en vez de abortar.
-- Jerarquía de encabezados por tamaño de fuente, tablas como Markdown y orden
-  de lectura correcto en documentos a varias columnas (motor
+Windows desktop app that converts PDF documents (technical manuals, articles,
+etc.) to Markdown, with optional image extraction. Built to produce Markdown
+content ready to use as context in conversations with LLMs.
+
+![App screenshot](docs/screenshot.png)
+
+## Features
+
+- Simple graphical interface (customtkinter): select a PDF and save.
+- Two export modes:
+  - **MD text + images**: converts the text and extracts the PDF's images to
+    a folder next to the `.md` file, with relative links.
+  - **MD text only**: text only, no images.
+- Page-by-page conversion: if a page fails, the error is noted in the output
+  and the rest of the document is still processed instead of aborting.
+- Heading hierarchy based on font size, tables rendered as Markdown, and
+  correct reading order in multi-column documents (powered by
   [`pymupdf4llm`](https://pypi.org/project/pymupdf4llm/)).
 
-## Descarga
+## Download
 
-El ejecutable standalone para Windows (`PDF a Markdown.exe`) está disponible
-en la sección [Releases](../../releases) de este repositorio. No requiere
-Python ni ninguna instalación adicional.
+The standalone Windows executable (`PDF a Markdown.exe`) is available in this
+repository's [Releases](../../releases) section. No Python or additional
+installation required.
 
-## Compilar desde el código fuente
+## Build from source
 
-Requisitos: Python 3.11+ en Windows.
+Requirements: Python 3.11+ on Windows.
 
 ```powershell
-# Crear y activar un entorno virtual
+# Create and activate a virtual environment
 py -3 -m venv .venv
 .venv\Scripts\activate
 
-# Instalar dependencias
-pip install customtkinter pymupdf pymupdf4llm pillow pyinstaller
+# Install dependencies
+pip install -r Trabajo\requirements.txt
 
-# Compilar el ejecutable (desde Trabajo\)
+# Build the executable (from Trabajo\)
 cd Trabajo
 pyinstaller "PDF a Markdown.spec"
 ```
 
-El `.exe` resultante se genera en `Trabajo\dist\`.
+The resulting `.exe` is generated in `Trabajo\dist\`.
 
-Para ejecutar el script directamente sin compilar:
+To run the script directly without building:
 
 ```powershell
 python Trabajo\pdf2md.py
 ```
 
-## Licencia
+## Known limitations
 
-MIT. Ver [LICENSE](LICENSE).
+- PDFs with irregular or complex column layouts (magazines, drop caps,
+  double-column images) may end up with mixed-up text order — this is a
+  limitation of `pymupdf4llm`'s layout engine, not something this tool
+  controls.
+- Some strict Markdown viewers that rely on relative paths (MarkBin,
+  Notepad++'s MarkdownViewer++) don't display the extracted images even
+  though the generated file is correct — confirmed to be a viewer limitation
+  (MarkBin requires absolute paths), not a bug in this tool. Viewers
+  confirmed to work well: Typora, Notepad++'s "Another Markdown"
+  ([ezyuzin/NppAnotherMarkdown](https://github.com/ezyuzin/NppAnotherMarkdown)).
+
+## License
+
+MIT. See [LICENSE](LICENSE).
