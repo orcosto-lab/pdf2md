@@ -21,3 +21,4 @@ PyYAML==6.0.3
 setuptools==83.0.0
 six==1.17.0
 tabulate==0.10.0
+tkinterdnd2==0.6.3

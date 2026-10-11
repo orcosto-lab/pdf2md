@@ -13,13 +13,39 @@ conversaciones con LLMs.
 
 ## Características
 
-- Interfaz gráfica sencilla (customtkinter): seleccionar PDF y guardar.
-- Dos modos de exportación:
+- Cola por lotes: añade varios PDF a la vez (selector de archivos, selector
+  de carpeta — solo sus PDFs directos, sin subcarpetas — o arrastrando y
+  soltando archivos/carpetas sobre la ventana) y conviértelos de uno en uno
+  en un hilo de trabajo aparte, sin bloquear la interfaz.
+- Controles de cola: selección múltiple de archivos pendientes para
+  reordenarlos (Subir/Bajar mueve el bloque seleccionado como unidad) o
+  quitarlos; reintentar los fallidos; limpiar completados de la lista en
+  cualquier momento, también con la cola en marcha (nunca afecta al archivo
+  en curso, nunca borra nada del disco); reiniciar los archivos
+  seleccionados en estado hecho/saltado/error para volver a convertirlos
+  sobrescribiendo su salida de forma segura (aparece un único diálogo de
+  confirmación solo si la salida actual de alguno ya existe; cada archivo se
+  convierte primero a una ubicación temporal y solo sustituye la salida
+  antigua si esa conversión termina bien — si falla, la salida anterior
+  queda intacta); cancelar el lote (termina el archivo en curso — una
+  llamada de `pymupdf4llm` no se puede interrumpir a mitad — y deja el resto
+  como "pendiente"; pulsar Iniciar de nuevo simplemente continúa la cola
+  donde se quedó); estado en vivo por archivo, barra de progreso global y
+  resumen final (hechos/saltados/con error, más los pendientes que queden si
+  se canceló el lote).
+- Modo de exportación global para toda la cola:
   - **Texto MD+Imágenes**: convierte el texto y extrae las imágenes del PDF a
     una carpeta junto al `.md`, con enlaces relativos.
   - **Texto MD**: solo texto, sin imágenes.
-- Conversión página a página: si una página falla, se anota el error en el
-  resultado y continúa con el resto del documento en vez de abortar.
+- Destino de salida global para toda la cola: junto a cada PDF, o una única
+  carpeta de salida.
+- Seguro por defecto: si el `.md` de destino (o, en modo con imágenes, su
+  carpeta `_images`) ya existe, ese archivo se salta y se informa — nunca se
+  sobrescribe ni se borra nada tuyo.
+- Conversión de documento completo en una sola llamada (más rápido), con
+  fallback automático página a página (solo si la llamada completa falla)
+  para aislar y reportar exactamente qué página está rota, sin abortar el
+  resto.
 - Jerarquía de encabezados por tamaño de fuente, tablas como Markdown y orden
   de lectura correcto en documentos a varias columnas (motor
   [`pymupdf4llm`](https://pypi.org/project/pymupdf4llm/)).
@@ -32,10 +58,10 @@ Python ni ninguna instalación adicional.
 
 ## Compilar desde el código fuente
 
-Requisitos: Python 3.11+ en Windows.
+Requisitos: Python 3.11+ en Windows (el venv propio del proyecto usa 3.14).
 
 ```powershell
-# Crear y activar un entorno virtual
+# Crear y activar un entorno virtual en la raíz del proyecto (no dentro de Trabajo\)
 py -3 -m venv .venv
 .venv\Scripts\activate
 
@@ -44,10 +70,12 @@ pip install -r Trabajo\requirements.txt
 
 # Compilar el ejecutable (desde Trabajo\)
 cd Trabajo
-pyinstaller "PDF a Markdown.spec"
+..\.venv\Scripts\python.exe -m PyInstaller "PDF a Markdown.spec"
 ```
 
-El `.exe` resultante se genera en `Trabajo\dist\`.
+El `.exe` resultante se genera en `Trabajo\dist\`. El `.spec` ya incluye los
+datos de `pymupdf` (imprescindible, ver `00_NOTAS_PROYECTO.md`) y los
+archivos nativos de arrastrar y soltar de `tkinterdnd2` vía `--collect-data`.
 
 Para ejecutar el script directamente sin compilar:
 

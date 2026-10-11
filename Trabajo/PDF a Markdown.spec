@@ -3,6 +3,7 @@ from PyInstaller.utils.hooks import collect_data_files
 
 datas = [('..\\.venv\\Lib\\site-packages\\customtkinter', 'customtkinter')]
 datas += collect_data_files('pymupdf')
+datas += collect_data_files('tkinterdnd2')
 
 
 a = Analysis(
@@ -10,7 +11,7 @@ a = Analysis(
     pathex=[],
     binaries=[],
     datas=datas,
-    hiddenimports=['fitz', 'pymupdf4llm'],
+    hiddenimports=['fitz', 'pymupdf4llm', 'tkinterdnd2'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
